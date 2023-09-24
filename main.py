@@ -34,20 +34,7 @@ CROSSOVER_CHANCE: Final[float] = 0.3
 1. Calculates the mean values of each color channel of the source image within the boundary defined by the chromosome.
 2. Calculates the distance between each color channel of the chromosome and the mean values of the source image.
 3. Returns the inverse of the distance as a fitness score. """
-
-""" def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v1
-
-    # calculate mean values on each channel of rgb scheme
-    means = source_img[coord[1]:coord[3], coord[0]:coord[2]].mean(axis=(0,1))
-
-    # calculate 3d distance squared between chromosome and mean values
-    score:float = 0.0
-    for i in range(len(chromosome)):
-        score += (chromosome[i] / means[i]) * (chromosome[i] / means[i])
-    
-    # return fitness score
-    return 1 / (1 + score) """
-""" def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v2
+def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v1
 
     # calculate mean values on each channel of rgb scheme
     means = source_img[coord[1]:coord[3], coord[0]:coord[2]].mean(axis=(0,1))
@@ -58,8 +45,8 @@ CROSSOVER_CHANCE: Final[float] = 0.3
         score += (chromosome[i] / means[i]) ** (chromosome[i] / means[i])
     
     # return fitness score
-    return 1 / (1 + score) """
-def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v3
+    return 1 / (1 + score)
+""" def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v2
 
     # calculate mean values on each channel of rgb scheme
     means = source_img[coord[1]:coord[3], coord[0]:coord[2]].mean(axis=(0,1))
@@ -70,7 +57,7 @@ def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #
         score += (chromosome[i] - means[i]) * (chromosome[i] - means[i])
     
     # return fitness score
-    return 1 / (1 + score)
+    return 1 / (1 + score) """
 #endregion
 
 #region selection
