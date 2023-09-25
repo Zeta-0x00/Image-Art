@@ -12,13 +12,6 @@ import random
 import time
 #endregion
 
-# This code implements a genetic algorithm to solve the following problem:
-#
-#   * Given a grid of dimensions GRID_DIMENSION x GRID_DIMENSION, place
-#     NUM_CHROMOSOMES queens on the grid such that no two queens can attack
-#     each other (i.e., they cannot share the same row, column, or diagonal).
-#
-# This code is a modified version of the code found at
 
 #region args
 parser = argparse.ArgumentParser(description='Image processing script')
