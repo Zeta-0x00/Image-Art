@@ -7,7 +7,7 @@ import argparse
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 from math import ceil
-from typing import Final
+from typing import Callable, Final
 import random
 import time
 #endregion
@@ -20,13 +20,28 @@ import time
 #
 # This code is a modified version of the code found at
 
-
-#region Constants
-GRID_DIMENSION: Final[int]= 6
-NUM_CHROMOSOMES: Final[int] = 90
-MUTATION_PROBABILITY: Final[float] = 0.5
-CROSSOVER_CHANCE: Final[float] = 0.3
+#region args
+parser = argparse.ArgumentParser(description='Image processing script')
+parser.add_argument('-i', '--input', required=True, help='Input image file path')
+parser.add_argument('-o', '--output', required=True, help='Output image file name')
+parser.add_argument('-f', '--fitness', type=int, default=1, choices=[1,2], help='Fitness function to use')
+parser.add_argument('-t', '--time', action='store_true', help='Print the start time and end time with timestap')
+parser.add_argument('-d', '--dimension', type=int, default=6, help='Grid dimension')
+parser.add_argument('-n', '--num', type=int, default=90, help='Number of chromosomes')
+parser.add_argument('-m', '--mutation', type=float, default=0.5, help='Mutation probability')
+parser.add_argument('-c', '--crossover', type=float, default=0.3, help='Crossover chance')
+parser.add_argument('-v', '--verbose', action='store_true', help='Print the parameters')
+args: argparse.Namespace = parser.parse_args()
 #endregion
+
+
+#region Parámetros
+GRID_DIMENSION: Final[int] = args.dimension
+NUM_CHROMOSOMES: Final[int] = args.num
+MUTATION_PROBABILITY: Final[float] = args.mutation
+CROSSOVER_CHANCE: Final[float] = args.crossover
+#endregion
+
 
 #region fitness
 # fitness calculating function
@@ -34,7 +49,7 @@ CROSSOVER_CHANCE: Final[float] = 0.3
 1. Calculates the mean values of each color channel of the source image within the boundary defined by the chromosome.
 2. Calculates the distance between each color channel of the chromosome and the mean values of the source image.
 3. Returns the inverse of the distance as a fitness score. """
-def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v1
+def fitness1(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v1
 
     # calculate mean values on each channel of rgb scheme
     means = source_img[coord[1]:coord[3], coord[0]:coord[2]].mean(axis=(0,1))
@@ -46,7 +61,7 @@ def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #
     
     # return fitness score
     return 1 / (1 + score)
-""" def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v2
+def fitness2(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #fitness v2
 
     # calculate mean values on each channel of rgb scheme
     means = source_img[coord[1]:coord[3], coord[0]:coord[2]].mean(axis=(0,1))
@@ -57,7 +72,10 @@ def fitness(chromosome: list[int], coord: tuple, source_img: Image)  -> float: #
         score += (chromosome[i] - means[i]) * (chromosome[i] - means[i])
     
     # return fitness score
-    return 1 / (1 + score) """
+    return 1 / (1 + score)
+
+# fitness function selector
+fitness: Callable[..., float] = fitness2 if args.fitness == 2 else fitness1
 #endregion
 
 #region selection
@@ -170,12 +188,15 @@ def main() -> None:
     2. Make the image divisible by squares of pixels with GRID_DIMENSION
     3. Create an empty image of the same size
     4. For each square, find the best chromosome and draw a circle with the appropriate color on the image """
-    parser = argparse.ArgumentParser(description='Image processing script')
-    parser.add_argument('-i', '--input', required=True, help='Input image file path')
-    parser.add_argument('-o', '--output', required=True, help='Output image file name')
-    parser.add_argument('-t', '--time', action='store_true', help='Print the start time and end time with timestap')
-    args: argparse.Namespace = parser.parse_args()
-
+    if args.verbose:
+        print(f'GRID_DIMENSION: {GRID_DIMENSION}')
+        print(f'NUM_CHROMOSOMES: {NUM_CHROMOSOMES}')
+        print(f'MUTATION_PROBABILITY: {MUTATION_PROBABILITY}')
+        print(f'CROSSOVER_CHANCE: {CROSSOVER_CHANCE}')
+        print(f'fitness: {fitness.__name__}')
+        print(f'input: {args.input}')
+        print(f'output: {args.output}')
+        print(f'time: {args.time}')
     start_time: float = time.time() # start timing
     if args.time:
         print(f'Start time: {time.ctime(start_time)}')
