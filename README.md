@@ -6,7 +6,7 @@
 ```haskell
 pip install -r requirements.txt
 ```
-## 2. Helo & Usage
+## 2. Help & Usage
 ```haskell
 usage: main.py [-h] -i INPUT -o OUTPUT [-f {1,2}] [-t] [-d DIMENSION] [-n NUM]
                [-m MUTATION] [-c CROSSOVER] [-v]
